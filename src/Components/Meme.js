@@ -1,6 +1,6 @@
 import styles from "../Styles/Meme.module.css";
 
-export default function Meme({ image, caption }) {
+export default function Meme({ image, caption, id, onClick }) {
   return (
     <div className={styles.memeContainer}>
       <img
@@ -9,6 +9,7 @@ export default function Meme({ image, caption }) {
         className={styles.memeImage}
       />
       <p className={styles.memeCaption}>{caption}</p>
+      {/* <button onClick={() => onClick(id)}>Remove meme</button> */}
     </div>
   );
 }

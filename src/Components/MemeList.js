@@ -1,10 +1,10 @@
 import Meme from "./Meme";
 
-export default function MemeList({ memes }) {
+export default function MemeList({ memes, onClick }) {
   return (
     <ul>
       {memes.map(meme => (
-        <Meme image={meme.image} caption={meme.caption} key={meme.id} />
+        <Meme meme={meme} key={meme.id} onClick={onClick} />
       ))}
     </ul>
   );

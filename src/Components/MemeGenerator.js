@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { useFetchMeme } from "../Hooks/useFetchMeme";
 import Meme from "./Meme";
+import MemeList from "./MemeList";
 
 /*
+
+? SHOULD A SEPARATE COMPONENT BE CREATED TO PREVIEW THE MEME? 
+- BECAUSE MEME COMPONENT IS REUSED BUT FOR DIFFERENT PURPOSES -> {CHILDREN} ??? BUT PROPS? NOT SURE OF {CHILDREN}
+? SHOULD A USER BE GIVEN CHOICE TO CHOOSE PREVIOUS PIC? (COMPLICATED)
+
 + saves meme in arr of obj 
++ local storage
 + checks for duplicates
-! alert user if he has duplicates (lift state to app? not sure, lift is duplicate state?)
+! alert user if he has duplicates (lift state to app? not sure, lift isDuplicate state?)
 
 to do:
 - Displaying saved memes in a list.
@@ -16,7 +23,11 @@ to do:
 
 export default function MemeGenerator() {
   const [caption, setCaption] = useState("");
-  const [memes, setMemes] = useState([]);
+  const [memes, setMemes] = useState(
+    JSON.parse(localStorage.getItem("memes")) || []
+  );
+
+  const [notification, setNotification] = useState(null);
 
   const { loading, error, image, fetchMeme } = useFetchMeme();
 
@@ -40,12 +51,33 @@ export default function MemeGenerator() {
 
     const isDuplicate =
       memes.length !== 0 &&
-      memes.every(
+      memes.some(
         meme => meme.caption === newMeme.caption && meme.image === newMeme.image
       );
 
-    if (isDuplicate) return;
-    setMemes(prevMemes => [...prevMemes, newMeme]);
+    if (isDuplicate) {
+      setNotification("This meme already exists!");
+      return;
+    }
+
+    setMemes(prev => {
+      const updated = [...prev, newMeme];
+      localStorage.setItem("memes", JSON.stringify(updated));
+      return updated;
+    });
+
+    setNotification("Meme saved!");
+  }
+
+  function handleRemoveMeme(memeId) {
+    setMemes(memes => {
+      memes.filter(meme => meme.id !== memeId);
+    });
+  }
+
+  function handleAnotherImage() {
+    setNotification(null);
+    fetchMeme();
   }
 
   return (
@@ -58,7 +90,7 @@ export default function MemeGenerator() {
 
           {/* hide 'another image' button when 'Save' is clicked -> display saved memes ? <MemeList memes={memes} /> : return to something lol
            */}
-          <button onClick={fetchMeme}>Another Image</button>
+          <button onClick={handleAnotherImage}>Another Image</button>
         </>
       ) : (
         <form onSubmit={handleSubmit}>
@@ -78,12 +110,14 @@ export default function MemeGenerator() {
         <div style={{ color: "red", marginTop: "10px" }}>{error.message}</div>
       )}
 
-      {/* {Object.keys(savedMemes).length !== 0 && (
+      {notification && <p>{notification}</p>}
+
+      {memes.length > 0 && (
         <>
           <p>You saved some memes, show them?</p>
-          <button onClick={null}>Yes!</button>
+          {/* <MemeList memes={memes} onClick={handleRemoveMeme} /> */}
         </>
-      )} */}
+      )}
     </div>
   );
 }
