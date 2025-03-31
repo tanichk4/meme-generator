@@ -1,0 +1,42 @@
+@import url("https://fonts.cdnfonts.com/css/impact");
+
+/* font-family: "Impact", sans-serif; */
+
+.memeContainer {
+  position: relative;
+
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  text-align: center;
+
+  border: 2px solid black;
+
+  overflow: hidden;
+}
+
+.memeImage {
+  /* width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-fit: stretch; */
+  max-width: inherit;
+  max-height: inherit;
+  height: inherit;
+  width: inherit;
+  object-fit: cover;
+}
+
+.memeCaption {
+  font-family: "Impact", sans-serif;
+  font-size: 32px;
+  text-transform: uppercase;
+  color: white;
+  -webkit-text-stroke: 1.5px black;
+
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 30px;
+}
