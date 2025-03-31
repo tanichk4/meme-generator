@@ -7,6 +7,11 @@ import Meme from "./Meme";
 + checks for duplicates
 ! alert user if he has duplicates (lift state to app? not sure, lift is duplicate state?)
 
+to do:
+- Displaying saved memes in a list.
+- Improved duplicate handling and user feedback.
+- Option to delete or share saved memes.
+- Persisting saved memes using `localStorage`.
 */
 
 export default function MemeGenerator() {
