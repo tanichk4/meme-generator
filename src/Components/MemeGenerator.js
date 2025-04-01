@@ -1,47 +1,25 @@
 import { useState } from "react";
-import { useFetchMeme } from "../Hooks/useFetchMeme";
-import Meme from "./Meme";
+
+import MemeForm from "./MemeForm";
+import Message from "./Message";
+import Error from "./Error";
+
+import { useLocalStorageState } from "../Hooks/useLocalStorageState";
+import { useFetchImage } from "../Hooks/useFetchImage";
 import MemeList from "./MemeList";
 
-/*
-
-? SHOULD A SEPARATE COMPONENT BE CREATED TO PREVIEW THE MEME? 
-- BECAUSE MEME COMPONENT IS REUSED BUT FOR DIFFERENT PURPOSES -> {CHILDREN} ??? BUT PROPS? NOT SURE OF {CHILDREN}
-? SHOULD A USER BE GIVEN CHOICE TO CHOOSE PREVIOUS PIC? (COMPLICATED)
-
-+ saves meme in arr of obj 
-+ local storage
-+ checks for duplicates
-! alert user if he has duplicates (lift state to app? not sure, lift isDuplicate state?)
-
-to do:
-- Displaying saved memes in a list.
-- Improved duplicate handling and user feedback.
-- Option to delete or share saved memes.
-- Persisting saved memes using `localStorage`.
-*/
-
 export default function MemeGenerator() {
+  const [message, setMessage] = useState(null);
   const [caption, setCaption] = useState("");
-  const [memes, setMemes] = useState(
-    JSON.parse(localStorage.getItem("memes")) || []
-  );
+  const [memes, setMemes] = useLocalStorageState([], "memes");
+  const { loading, error, image, fetchImage } = useFetchImage();
 
-  const [notification, setNotification] = useState(null);
-
-  const { loading, error, image, fetchMeme } = useFetchMeme();
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (!caption) return;
-
-    fetchMeme();
+  function handleFetchImage() {
+    fetchImage();
   }
 
   function handleSaveMeme() {
-    // !isDuplicate + saved: display message your meme was saved! You have X meme(s) saved, want to see?
-    // isDuplicate ? this meme is already saved.
-    // maybe even check if the titles match even without photos and inform user the same lol
+    if (!caption.trim()) return setMessage("Enter a caption!");
 
     const newMeme = {
       id: crypto.randomUUID(),
@@ -56,68 +34,44 @@ export default function MemeGenerator() {
       );
 
     if (isDuplicate) {
-      setNotification("This meme already exists!");
+      setMessage("This meme already exists!");
       return;
     }
 
-    setMemes(prev => {
-      const updated = [...prev, newMeme];
-      localStorage.setItem("memes", JSON.stringify(updated));
-      return updated;
-    });
+    setMemes(prev => [...prev, newMeme]);
 
-    setNotification("Meme saved!");
+    setMessage("Meme saved!");
   }
 
-  function handleRemoveMeme(memeId) {
-    setMemes(memes => {
-      memes.filter(meme => meme.id !== memeId);
-    });
+  function handleChangeCaption(e) {
+    setCaption(e.target.value);
   }
 
-  function handleAnotherImage() {
-    setNotification(null);
-    fetchMeme();
+  function handleDeleteMeme(id) {
+    setMemes(memes => memes.filter(meme => meme.id !== id));
   }
 
   return (
     <div>
-      {image ? (
-        <>
-          <Meme image={image} caption={caption} />
-
-          <button onClick={handleSaveMeme}>Save</button>
-
-          {/* hide 'another image' button when 'Save' is clicked -> display saved memes ? <MemeList memes={memes} /> : return to something lol
-           */}
-          <button onClick={handleAnotherImage}>Another Image</button>
-        </>
+      {!image ? (
+        <button onClick={handleFetchImage}>Fetch an image to start</button>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Enter meme caption"
-            value={caption}
-            onChange={e => setCaption(e.target.value.trim())}
-          />
-          <button disabled={loading}>
-            {loading ? "Loading..." : "Submit"}
-          </button>
-        </form>
+        <MemeForm
+          image={image}
+          caption={caption}
+          onChangeCaption={handleChangeCaption}
+          onSaveMeme={handleSaveMeme}
+          onFetchImage={handleFetchImage}
+        />
       )}
 
-      {error && (
-        <div style={{ color: "red", marginTop: "10px" }}>{error.message}</div>
+      {message && <Message message={message} />}
+
+      {memes.length !== 0 && (
+        <MemeList memes={memes} onDeleteMeme={handleDeleteMeme} />
       )}
 
-      {notification && <p>{notification}</p>}
-
-      {memes.length > 0 && (
-        <>
-          <p>You saved some memes, show them?</p>
-          {/* <MemeList memes={memes} onClick={handleRemoveMeme} /> */}
-        </>
-      )}
+      {error && <Error message={error.message} />}
     </div>
   );
 }

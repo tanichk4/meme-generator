@@ -6,7 +6,7 @@
   position: relative;
 
   width: 300px;
-  height: 300px;
+  min-height: 300px;
   margin: 0 auto;
   text-align: center;
 
@@ -16,10 +16,6 @@
 }
 
 .memeImage {
-  /* width: 100%;
-  height: auto;
-  object-fit: cover;
-  object-fit: stretch; */
   max-width: inherit;
   max-height: inherit;
   height: inherit;
@@ -39,4 +35,11 @@
   left: 50%;
   transform: translate(-50%, -50%);
   line-height: 30px;
+}
+
+.memeInput {
+}
+
+.memeButton {
+  position: absolute;
 }

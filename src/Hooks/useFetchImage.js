@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
 
-export function useFetchMeme() {
+export function useFetchImage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [image, setImage] = useState(null);
 
-  async function fetchMeme() {
+  async function fetchImage() {
     try {
       setLoading(true);
       const res = await axios.get("https://api.imgflip.com/get_memes");
@@ -24,5 +24,5 @@ export function useFetchMeme() {
     }
   }
 
-  return { loading, error, image, fetchMeme };
+  return { loading, error, image, fetchImage };
 }

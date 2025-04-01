@@ -1,11 +1,14 @@
 import Meme from "./Meme";
 
-export default function MemeList({ memes, onClick }) {
+export default function MemeList({ memes, onDeleteMeme }) {
   return (
-    <ul>
-      {memes.map(meme => (
-        <Meme meme={meme} key={meme.id} onClick={onClick} />
-      ))}
-    </ul>
+    <>
+      <h2>Your created memes</h2>
+      <ul>
+        {memes.map(meme => (
+          <Meme meme={meme} key={meme.id} onDeleteMeme={onDeleteMeme} />
+        ))}
+      </ul>
+    </>
   );
 }
