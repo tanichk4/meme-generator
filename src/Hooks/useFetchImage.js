@@ -9,6 +9,7 @@ export function useFetchImage() {
   async function fetchImage() {
     try {
       setLoading(true);
+      setError(null);
       const res = await axios.get("https://api.imgflip.com/get_memes");
 
       const data = await res.data;

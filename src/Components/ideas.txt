@@ -1,6 +1,6 @@
+to do:
 
-
-? SHOULD A SEPARATE COMPONENT BE CREATED TO PREVIEW THE MEME? 
-- BECAUSE MEME COMPONENT IS REUSED BUT FOR DIFFERENT PURPOSES -> {CHILDREN} ??? BUT PROPS? NOT SURE OF {CHILDREN}
-? SHOULD A USER BE GIVEN CHOICE TO CHOOSE PREVIOUS PIC? (COMPLICATED)
-
+- should message and error be unified? or error state lifted to MemeGenerator.js and a setter function passed to useFetchImage?
+- should useFetchImage return only an image, function to fetch image - or both?
+- styling? 
+- should isDuplicate be a separate function? 
